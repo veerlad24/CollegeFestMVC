@@ -1,0 +1,40 @@
+@model IEnumerable<Participant>
+@{
+    ViewData["Title"] = "Participants";
+}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div><span class="eyebrow">FEST DIRECTORY</span><h1 class="fw-bold mt-2">Registered participants</h1><p class="text-secondary mb-0">Review participant information and registration status.</p></div>
+    <a class="btn btn-primary" asp-controller="Fest" asp-action="Register">+ Add participant</a>
+</div>
+@if (TempData["SuccessMessage"] is string message)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">@message<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+}
+<div class="table-responsive table-card">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Department</th><th>Year</th><th>Event</th><th>Status</th><th>Fee</th><th>Action</th></tr></thead>
+        <tbody>
+        @if (!Model.Any())
+        {
+            <tr><td colspan="9" class="text-center py-5 text-secondary">No participants yet. Select “Add participant” to begin.</td></tr>
+        }
+        else
+        {
+            @foreach (var participant in Model)
+            {
+                <tr>
+                    <td>@participant.ParticipantId</td><td class="fw-semibold">@participant.ParticipantName</td><td>@participant.Email</td>
+                    <td>@participant.Department</td><td>@participant.Year</td><td>@participant.EventName</td>
+                    <td>
+                        @if (participant.GetRegistrationStatus() == "Confirmed") { <span class="badge text-bg-success">Confirmed</span> }
+                        else { <span class="badge text-bg-warning">Pending</span> }
+                    </td>
+                    <td>₹@((participant.RegistrationFee ?? 0m).ToString("0.00"))<div class="small text-secondary">@participant.GetFeeCategory()</div></td>
+                    <td><a asp-controller="Fest" asp-action="Details" asp-route-id="@participant.ParticipantId" class="btn btn-sm btn-outline-primary">Details</a></td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>
+<div class="mt-3 text-secondary small">Total participants: @Model.Count()</div>

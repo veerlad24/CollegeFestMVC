@@ -1,0 +1,33 @@
+@model Participant
+@{
+    ViewData["Title"] = "Participant details";
+    var status = Model.GetRegistrationStatus();
+}
+<div class="mb-4"><span class="eyebrow">REGISTRATION SUMMARY</span><h1 class="fw-bold mt-2">Participant details</h1></div>
+@if (status == "Confirmed")
+{
+    <div class="alert alert-success">Registration confirmed. Welcome, <strong>@Model.ParticipantName</strong>!</div>
+}
+else
+{
+    <div class="alert alert-warning">Your registration is pending confirmation.</div>
+}
+<div class="details-card">
+    <h3 class="mb-1">Welcome, @Model.ParticipantName!</h3>
+    <p class="text-secondary">You are registered for <strong>@Model.EventName</strong>.</p>
+    <hr />
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Participant ID</dt><dd class="col-sm-8">@Model.ParticipantId</dd>
+        <dt class="col-sm-4">Email</dt><dd class="col-sm-8">@Model.Email</dd>
+        <dt class="col-sm-4">Department</dt><dd class="col-sm-8">@Model.Department</dd>
+        <dt class="col-sm-4">Academic year</dt><dd class="col-sm-8">@Model.Year</dd>
+        <dt class="col-sm-4">Team event</dt><dd class="col-sm-8">@(Model.IsTeamEvent ? "Yes" : "No")</dd>
+        <dt class="col-sm-4">Registration status</dt><dd class="col-sm-8">@status</dd>
+        <dt class="col-sm-4">Registration fee</dt><dd class="col-sm-8">₹@((Model.RegistrationFee ?? 0m).ToString("0.00"))</dd>
+        <dt class="col-sm-4">Fee category</dt><dd class="col-sm-8"><span class="badge rounded-pill text-bg-info">@Model.GetFeeCategory()</span></dd>
+    </dl>
+</div>
+<div class="mt-4 d-flex gap-2 flex-wrap">
+    <a asp-controller="Fest" asp-action="Index" class="btn btn-primary">Back to participants</a>
+    <a asp-controller="Fest" asp-action="Register" class="btn btn-outline-secondary">Register another</a>
+</div>
